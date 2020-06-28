@@ -10,14 +10,21 @@ class PinInput extends StatefulWidget {
   _PinInputState createState() => _PinInputState();
 }
 
+/// 因为flutter没有提供一个完整的按键监听
+/// 没有办法知晓在TextField中连续输入删除键
+/// 临时方案：
+/// 第一次按下删除键时替换值为空白符
+/// 第二次按下删除键时把空白符删除
+/// TextField在焦点变化时，如果输入值不是空白符也不是正常值，替换成空白符（用于下次直接按下删除键）
 class _PinInputState extends State<PinInput> {
   static const _pinSize = 4;
   static const _whiteSpace = ' ';
 
+  /// pin结果
   List<String> _pin;
-  List<FocusNode> _focusNodes;
 
-  void _pinDone() {}
+  /// 控制focus，并且在focus变化时保证_pin值为空白符或者正常值
+  List<FocusNode> _focusNodes;
 
   void _pinChange(index, String str) {
     if (str != _whiteSpace) {
@@ -114,6 +121,7 @@ class _PinInputState extends State<PinInput> {
   }
 }
 
+/// 用来当输入为空时替换为空白符，如果连续出现俩次空白符则替换为空值
 class _PinInputFormatter extends TextInputFormatter {
   String _whiteSpace;
 
